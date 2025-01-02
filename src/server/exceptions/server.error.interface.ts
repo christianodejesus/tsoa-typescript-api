@@ -1,4 +1,4 @@
-import { HttpStatusCodesEnum } from "../model/http.status.codes.enum"
+import { HttpStatusCodesEnum } from "../enums"
 
 export interface IServerError extends Error {
   code?: string

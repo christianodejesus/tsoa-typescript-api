@@ -1,7 +1,7 @@
 import express from "express"
 import { LoggerService } from "../../infra/log"
 import httpContext from "express-http-context"
-import { ContextPropertyNamesEnum, HttpStatusCodesEnum } from "../model"
+import { ContextPropertyNamesEnum, HttpStatusCodesEnum } from "../enums"
 
 export class HttpLogMiddleware {
   private logger: LoggerService

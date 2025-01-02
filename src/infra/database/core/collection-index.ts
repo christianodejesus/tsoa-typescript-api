@@ -3,8 +3,10 @@ export enum IndexSortOrderEnum {
   DESCENDING = -1,
 }
 
+export type TIndexSortDictionay = Record<string, IndexSortOrderEnum>
+
 export interface ICollectionIndex {
   name: string
-  model: Record<string, IndexSortOrderEnum>
+  model: TIndexSortDictionay
   isUnique: boolean
 }

@@ -1,4 +1,4 @@
-import { HttpStatusCodesEnum } from "../model/http.status.codes.enum"
+import { HttpStatusCodesEnum } from "../enums"
 import { IServerError } from "./server.error.interface"
 
 export class ApiError extends Error implements IServerError {

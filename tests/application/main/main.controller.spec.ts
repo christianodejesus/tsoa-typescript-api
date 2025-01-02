@@ -2,9 +2,9 @@ import supertest from "supertest"
 import { MainController } from "../../../src/application/main"
 import { container, LoadDependencies } from "../../../src/config"
 import { ApiServer } from "../../../src/server"
-import { HttpStatusCodesEnum } from "../../../src/server/model"
+import { HttpStatusCodesEnum } from "../../../src/server/enums"
 import { UuidHelper } from "../../../src/shared/helpers"
-import { TestHelper } from "../../utils/test.helper"
+import { TestHelper } from "../../utils"
 
 describe(MainController.name, () => {
   LoadDependencies(container)

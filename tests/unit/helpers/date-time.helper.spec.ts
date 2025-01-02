@@ -1,4 +1,4 @@
-import { DateTimeHelper } from "../../src/shared/helpers"
+import { DateTimeHelper } from "../../../src/shared/helpers"
 
 describe(DateTimeHelper.name, () => {
   it(`Should formatToDate format date correctly from BR to ISO formats`, () => {

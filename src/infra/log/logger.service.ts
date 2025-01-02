@@ -1,7 +1,7 @@
 import { AsyncLocalStorage } from "async_hooks"
 import httpContext from "express-http-context"
 import winston from "winston"
-import { ContextPropertyNamesEnum } from "../../server/model/context.property.names.enum"
+import { ContextPropertyNamesEnum } from "../../server/enums"
 import { AppConfig } from "../../config/app/app.config"
 import { container } from "../../config/ioc/inversify.ioc.module"
 import { LogOutputFormatEnum } from "../../config"

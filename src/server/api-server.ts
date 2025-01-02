@@ -8,7 +8,7 @@ import { RegisterRoutes } from "./routes"
 import { singleton, AppConfig } from "../config"
 import swaggerUi from "swagger-ui-express"
 import httpContext from "express-http-context"
-import { ContextPropertyNamesEnum } from "./model"
+import { ContextPropertyNamesEnum } from "./enums"
 import { UuidHelper } from "../shared/helpers"
 
 @singleton(ApiServer)

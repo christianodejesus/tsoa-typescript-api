@@ -25,7 +25,7 @@ export interface IHttpClientRequestConfig {
   timeout?: number
 }
 
-type RequestMethod = "get" | "post" | "put" | "patch" | "delete"
+type TRequestMethod = "get" | "post" | "put" | "patch" | "delete"
 
 export class HttpClientError extends Error implements IServerError {
   constructor(
@@ -152,7 +152,7 @@ export class HttpClient {
     }
   }
 
-  private async request(method: RequestMethod, url: string, config?: IRequestConfigs, data?: unknown) {
+  private async request(method: TRequestMethod, url: string, config?: IRequestConfigs, data?: unknown) {
     try {
       const requestConfig = { ...this.mountAxiosRequestConfig(config), method, url, data }
       this.logger.info(`[${this.logContext}_REQUEST] [${method.toUpperCase()}]`, { request: requestConfig })

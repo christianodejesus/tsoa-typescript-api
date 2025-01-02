@@ -1,40 +1,53 @@
 import { singleton } from "../../../config"
+import { InvalidSigninDataException } from "../../../domain/exceptions"
 import { LoggerService } from "../../../infra/log"
-import { ILoginInputDto, ILoginOutputDto, IUserInputDto } from "../dto"
+import { JWTService } from "../../../server/services"
+import { EncryptHelper } from "../../../shared/helpers"
+import { UserService } from "../../user/services"
+import { ISignInInputDto, ISignInOutputDto, ISignUpInputDto } from "../dto"
 
 @singleton(AuthService)
 export class AuthService {
+  private readonly DEFAULT_TOKEN_TIMEOUT = 60 * 60 * 24 // 24h expressed in seconds
   private readonly logger = new LoggerService(AuthService.name)
 
-  public async validateUser(input: ILoginInputDto) {
-    this.logger.info("user validation process", { input })
-    // const user = await this.userService.findByEmail(input.email)
+  constructor(
+    private userService: UserService,
+    private jwtService: JWTService,
+  ) {}
 
-    // if (user && (await EncryptService.verify(input.password, user.pass))) {
-    //   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    //   const { pass, _id, email, name } = user
+  public async validateUser(input: ISignInInputDto) {
+    this.logger.info("user validation process", { email: input.email })
+    const user = await this.userService.findByEmail(input.email)
 
-    //   return { id: _id, name, email }
-    // }
+    if (user && EncryptHelper.verify(input.password, user.password)) {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { password, id, email, name } = user
 
-    return null
+      return { id, name, email }
+    }
+
+    throw new InvalidSigninDataException("Invalid email or password")
   }
 
-  public async signUp(input: IUserInputDto): Promise<void> {
-    this.logger.info("user sign up process", { input })
+  public async signUp(input: ISignUpInputDto): Promise<void> {
+    this.logger.info("user sign up process", {
+      input: {
+        name: input.name,
+        email: input.email,
+      },
+    })
+
+    await this.userService.create(input)
   }
 
-  async signIn(input: ILoginInputDto): Promise<ILoginOutputDto> {
-    this.logger.info("user sign in process", { input })
-    throw new Error()
-    // const user = await this.validateUser(input)
-    // if (!user) {
-    //   throw new Error()
-    // }
-    // const payload = { name: user.name, sub: user.id }
-    // return {
-    //   access_token: await this.jwtService.signAsync(payload),
-    //   expires_in: 86400,
-    // }
+  async signIn(input: ISignInInputDto): Promise<ISignInOutputDto> {
+    this.logger.info("user sign in process", { email: input.email })
+    const user = await this.validateUser(input)
+
+    return {
+      access_token: this.jwtService.generateToken({ name: user.name, sub: user.id }, this.DEFAULT_TOKEN_TIMEOUT),
+      expires_in: this.DEFAULT_TOKEN_TIMEOUT,
+    }
   }
 }

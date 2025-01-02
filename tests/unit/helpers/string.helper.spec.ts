@@ -1,4 +1,4 @@
-import { StringHelper } from "../../src/shared/helpers"
+import { StringHelper } from "../../../src/shared/helpers"
 
 describe(StringHelper.name, () => {
   it("test rot13 alg", () => {

@@ -2,7 +2,8 @@ import express from "express"
 import { ValidateError } from "tsoa"
 import httpContext from "express-http-context"
 import { ApiError, ErrorNamesEnum, IServerError } from "../exceptions"
-import { HttpStatusCodesEnum, ContextPropertyNamesEnum } from "../model"
+import { HttpStatusCodesEnum, ContextPropertyNamesEnum } from "../enums"
+import { ServiceError } from "../../shared/exceptions"
 
 export class ErrorHandlingMiddleware {
   public setHandler(app: express.Express) {
@@ -41,6 +42,19 @@ export class ErrorHandlingMiddleware {
             name: ErrorNamesEnum.E_VALIDATION_ERROR,
             message: err.message,
             fields: err.fields,
+          })
+          .end()
+
+        return
+      }
+
+      if (err instanceof ServiceError) {
+        const errData = err as ServiceError
+        res.status(HttpStatusCodesEnum.BAD_REQUEST)
+        res
+          .json({
+            name: errData.name,
+            message: errData.message,
           })
           .end()
 

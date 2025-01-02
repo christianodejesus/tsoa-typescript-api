@@ -4,7 +4,7 @@
  *   "password": "abcd234fdf"
  * }
  */
-export interface ILoginInputDto {
+export interface ISignInInputDto {
   email: string
   password: string
 }

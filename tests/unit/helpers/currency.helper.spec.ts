@@ -1,4 +1,4 @@
-import { CurrencyHelper } from "../../src/shared/helpers"
+import { CurrencyHelper } from "../../../src/shared/helpers"
 
 const testNumbers = [-10.01, 10.01, 0, 100, -500.5, 1234.56, -789.12, 2000, 5.0]
 

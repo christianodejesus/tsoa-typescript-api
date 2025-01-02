@@ -2,7 +2,7 @@ import { Controller, Example, Get, Route, SuccessResponse, Tags } from "tsoa"
 import { singleton, AppConfig } from "../../../config"
 import { DateTimeHelper } from "../../../shared/helpers"
 import { IHealthOutputDto } from "../dto"
-import { HttpStatusCodesEnum } from "../../../server/model"
+import { HttpStatusCodesEnum } from "../../../server/enums"
 
 @Route("/")
 @Tags("Main")

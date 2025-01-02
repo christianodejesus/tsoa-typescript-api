@@ -3,8 +3,8 @@ import { AppConfig, singleton } from "../../../config"
 import { ICollectionIndex } from "./collection-index"
 import { LoggerService } from "../../log"
 
-export type DBOrderOptions = "ASC" | "DESC"
-export type DBOrder = Record<string, DBOrderOptions>
+export type TDBOrderOptions = "ASC" | "DESC"
+export type TDBOrder = Record<string, TDBOrderOptions>
 
 @singleton(MongoDBClient)
 export class MongoDBClient {
@@ -22,7 +22,9 @@ export class MongoDBClient {
 
       return true
     } catch (e) {
-      this.logger.error("connectDB: Erro ao conectar com o MongoDB.", e)
+      this.logger.error("connectDB: Erro ao conectar com o MongoDB.", {
+        message: e.message,
+      })
       return false
     }
   }
@@ -34,7 +36,9 @@ export class MongoDBClient {
 
       return true
     } catch (e) {
-      this.logger.error("disconnectDB: Erro ao desconectar do MongoDB.", e)
+      this.logger.error("disconnectDB: Erro ao desconectar do MongoDB.", {
+        message: e.message,
+      })
       return false
     }
   }
@@ -48,7 +52,9 @@ export class MongoDBClient {
 
       return result.acknowledged && !!result.insertedId
     } catch (e) {
-      this.logger.error("create: Erro ao inserir registro no banco.", e.message)
+      this.logger.error("create: Erro ao inserir registro no banco.", {
+        message: e.message,
+      })
       throw e
     }
   }
@@ -62,7 +68,9 @@ export class MongoDBClient {
 
       return result.modifiedCount > 0
     } catch (e) {
-      this.logger.error("update: Erro ao atualizar registro no banco.", e.message)
+      this.logger.error("update: Erro ao atualizar registro no banco.", {
+        message: e.message,
+      })
       throw e
     }
   }
@@ -73,12 +81,14 @@ export class MongoDBClient {
 
       return result.deletedCount > 0
     } catch (e) {
-      this.logger.error("delete: Erro ao deletar registro do banco.", e.message)
+      this.logger.error("delete: Erro ao deletar registro do banco.", {
+        message: e.message,
+      })
       throw e
     }
   }
 
-  async find<T>(filter: Partial<T>, collection: string, order?: DBOrder, limit?: number, page?: number): Promise<T[]> {
+  async find<T>(filter: Partial<T>, collection: string, order?: TDBOrder, limit?: number, page?: number): Promise<T[]> {
     try {
       let sort: Sort = {}
       if (order) {
@@ -98,12 +108,14 @@ export class MongoDBClient {
         .map((item) => item as T)
         .toArray()
     } catch (e) {
-      this.logger.error("find: Erro ao buscar registros no banco.", e)
+      this.logger.error("find: Erro ao buscar registros no banco.", {
+        message: e.message,
+      })
       throw e
     }
   }
 
-  async getById<T>(id: string, collection: string): Promise<T | null> {
+  async findById<T>(id: string, collection: string): Promise<T | null> {
     try {
       const result = await this.client
         .db()
@@ -112,7 +124,25 @@ export class MongoDBClient {
 
       return result
     } catch (e) {
-      this.logger.error("getById: Erro ao obter o registro no banco.", e.message)
+      this.logger.error("getById: Erro ao obter o registro no banco.", {
+        message: e.message,
+      })
+      throw e
+    }
+  }
+
+  async findOneBy<T>(filter: Partial<T>, collection: string): Promise<T | null> {
+    try {
+      const result = await this.client
+        .db()
+        .collection(collection)
+        .findOne<T>(filter, { projection: { _id: false } })
+
+      return result
+    } catch (e) {
+      this.logger.error("findOneBy: Erro ao obter o registro no banco.", {
+        message: e.message,
+      })
       throw e
     }
   }
@@ -138,7 +168,9 @@ export class MongoDBClient {
         await dB.createIndexes(indexesToCreate)
       }
     } catch (e) {
-      this.logger.error(`createIndexes: Erro ao criar índice(s) para collection ${collectionName} no banco.`, e.message)
+      this.logger.error(`createIndexes: Erro ao criar índice(s) para collection ${collectionName} no banco.`, {
+        message: e.message,
+      })
       throw e
     }
   }
@@ -156,10 +188,9 @@ export class MongoDBClient {
         await this.client.db().createCollection(collectionName)
       }
     } catch (e) {
-      this.logger.error(
-        `createCollectionIfNotExists: Erro ao criar índice(s) para collection ${collectionName} no banco.`,
-        e.message,
-      )
+      this.logger.error(`createCollectionIfNotExists: Erro ao criar collection ${collectionName} no banco.`, {
+        message: e.message,
+      })
       throw e
     }
   }

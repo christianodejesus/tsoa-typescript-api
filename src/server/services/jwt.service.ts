@@ -3,8 +3,8 @@ import { AppConfig } from "../../config/app/app.config"
 import { singleton } from "../../config/ioc/inversify.ioc.module"
 import { LoggerService } from "../../infra/log"
 import { ApiError } from "../exceptions"
-import { HttpStatusCodesEnum } from "../model/http.status.codes.enum"
-import { RequestJWT } from "../model/request.jwt.interface"
+import { HttpStatusCodesEnum } from "../enums"
+import { TRequestJWT } from "../model/request.jwt.interface"
 
 @singleton(JWTService)
 export class JWTService {
@@ -16,7 +16,7 @@ export class JWTService {
     return new ApiError("UNAUTHORIZED", HttpStatusCodesEnum.UNAUTHORIZED, message || `JWT error: ${err.message}`)
   }
 
-  async resolveToken(token: string): Promise<RequestJWT> {
+  async resolveToken(token: string): Promise<TRequestJWT> {
     const secretValue = this.appConfig.jwtSecret
 
     if (!secretValue) {
@@ -29,7 +29,7 @@ export class JWTService {
         if (err) {
           reject(this.rejectToken(err))
         } else {
-          resolve(decoded as RequestJWT)
+          resolve(decoded as TRequestJWT)
         }
       })
     })

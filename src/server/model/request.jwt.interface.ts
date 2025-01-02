@@ -1,12 +1,12 @@
 import { Request } from "express"
-import { IUser } from "./user.interface"
+import { IRequestUser } from "./request.user.interface"
 
 export interface IBaseRequestJWT extends Request {
   scopes: string[]
 }
 
 export interface IUserRequestJWT extends IBaseRequestJWT {
-  user: IUser
+  user: IRequestUser
 }
 
-export type RequestJWT = IUserRequestJWT
+export type TRequestJWT = IUserRequestJWT
