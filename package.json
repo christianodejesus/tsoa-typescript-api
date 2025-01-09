@@ -67,7 +67,8 @@
     "swagger-ui-express": "^5.0.1",
     "tsoa": "^6.6.0",
     "uuid": "^11.0.3",
-    "winston": "^3.17.0"
+    "winston": "^3.17.0",
+    "winston-timestamp-colorize": "^1.1.0"
   },
   "lint-staged": {
     "src/**/*.{js,ts}": [

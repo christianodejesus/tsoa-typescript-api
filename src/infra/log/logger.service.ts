@@ -5,6 +5,7 @@ import { ContextPropertyNamesEnum } from "../../server/enums"
 import { AppConfig } from "../../config/app/app.config"
 import { container } from "../../config/ioc/inversify.ioc.module"
 import { LogOutputFormatEnum } from "../../config"
+import winstonTimestampColorize from "winston-timestamp-colorize"
 
 export class LoggerService {
   private appConfig: AppConfig
@@ -26,13 +27,13 @@ export class LoggerService {
     }
 
     const customLogFormatter = winston.format.printf((logInfo) => {
-      const { level, message, timestamp, context, logId, details } = logInfo
+      const { level, message, timestamp, context, logId, details, timestampValue } = logInfo
       const levelName = Object.keys(levels).find((name) => level.includes(name))
       const colorizedPart = levelName
-        ? level.replace(levelName, `[${timestamp}] ${this.serviceName}:${context}:${levelName}`)
-        : `[${timestamp}] ${this.serviceName}:${context}:${level}`
+        ? level.replace(levelName, `${this.serviceName}:${context}:${levelName}`)
+        : `${this.serviceName}:${context}:${level}`
 
-      let output = `${colorizedPart} ${message}`
+      let output = `${(timestamp as string).replace(timestampValue as string, `[${timestampValue}]`)} ${colorizedPart} ${message}`
 
       // @ts-expect-error i dont know
       const dataOutput = JSON.stringify({ ...details, logId }, null, 2)
@@ -44,7 +45,7 @@ export class LoggerService {
       return output
     })
 
-    const defaultLogFormatters = [winston.format.timestamp(), winston.format.errors({ stack: true })]
+    const defaultLogFormatters = [winston.format.timestamp({ alias: "timestampValue" }), winston.format.errors({ stack: true })]
 
     if (this.appConfig.logOutputFormat === LogOutputFormatEnum.CONSOLE) {
       winston.addColors({
@@ -54,6 +55,7 @@ export class LoggerService {
         debug: "bold magenta",
       })
       defaultLogFormatters.push(winston.format.colorize())
+      defaultLogFormatters.push(winstonTimestampColorize({ color: "blue" }))
       defaultLogFormatters.push(customLogFormatter)
     } else {
       defaultLogFormatters.push(

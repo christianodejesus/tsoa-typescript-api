@@ -18,11 +18,11 @@ export class MongoDBClient {
   async connectDB() {
     try {
       await this.client.connect()
-      this.logger.info("connectDB: conectado com sucesso.")
+      this.logger.info("connectDB: Connected with success to database server")
 
       return true
     } catch (e) {
-      this.logger.error("connectDB: Erro ao conectar com o MongoDB.", {
+      this.logger.error("connectDB: Error on trying to connect to database server", {
         message: e.message,
       })
       return false
@@ -32,11 +32,11 @@ export class MongoDBClient {
   async disconnectDB() {
     try {
       await this.client.close()
-      this.logger.info("disconnectDB: MongoDB desconectado com sucesso.")
+      this.logger.info("disconnectDB: Disconnected with success from database server")
 
       return true
     } catch (e) {
-      this.logger.error("disconnectDB: Erro ao desconectar do MongoDB.", {
+      this.logger.error("disconnectDB: Error on trying to disconnect from database server", {
         message: e.message,
       })
       return false
@@ -52,7 +52,7 @@ export class MongoDBClient {
 
       return result.acknowledged && !!result.insertedId
     } catch (e) {
-      this.logger.error("create: Erro ao inserir registro no banco.", {
+      this.logger.error("create: Error on trying to create document on database", {
         message: e.message,
       })
       throw e
@@ -68,7 +68,7 @@ export class MongoDBClient {
 
       return result.modifiedCount > 0
     } catch (e) {
-      this.logger.error("update: Erro ao atualizar registro no banco.", {
+      this.logger.error("update: Error on trying to update document on database", {
         message: e.message,
       })
       throw e
@@ -81,7 +81,7 @@ export class MongoDBClient {
 
       return result.deletedCount > 0
     } catch (e) {
-      this.logger.error("delete: Erro ao deletar registro do banco.", {
+      this.logger.error("delete: Error on trying to delete document from database", {
         message: e.message,
       })
       throw e
@@ -108,7 +108,7 @@ export class MongoDBClient {
         .map((item) => item as T)
         .toArray()
     } catch (e) {
-      this.logger.error("find: Erro ao buscar registros no banco.", {
+      this.logger.error("find: Error on trying to find documents on database", {
         message: e.message,
       })
       throw e
@@ -124,7 +124,7 @@ export class MongoDBClient {
 
       return result
     } catch (e) {
-      this.logger.error("getById: Erro ao obter o registro no banco.", {
+      this.logger.error("findById: Error on trying to find a document on database", {
         message: e.message,
       })
       throw e
@@ -140,7 +140,7 @@ export class MongoDBClient {
 
       return result
     } catch (e) {
-      this.logger.error("findOneBy: Erro ao obter o registro no banco.", {
+      this.logger.error("findOneBy: Error on trying to find a document on database", {
         message: e.message,
       })
       throw e
@@ -161,14 +161,14 @@ export class MongoDBClient {
         }))
 
       if (indexesToCreate.length > 0) {
-        this.logger.info(`createIndexes: criando índices para a collection`, {
+        this.logger.info("createIndexes: creating indexes for collection", {
           collectionName,
           indexCount: indexesToCreate.length,
         })
         await dB.createIndexes(indexesToCreate)
       }
     } catch (e) {
-      this.logger.error(`createIndexes: Erro ao criar índice(s) para collection ${collectionName} no banco.`, {
+      this.logger.error(`createIndexes: Error on trying to create indexes for collection ${collectionName}`, {
         message: e.message,
       })
       throw e
@@ -183,12 +183,13 @@ export class MongoDBClient {
           name: collectionName,
         })
         .toArray()
+
       if (collectionFound.length === 0) {
-        this.logger.info(`createCollectionIfNotExists: collection "${collectionName}" not found on database, creating collection`)
+        this.logger.info(`createCollectionIfNotExists: collection "${collectionName}" not found on database, creating it`)
         await this.client.db().createCollection(collectionName)
       }
     } catch (e) {
-      this.logger.error(`createCollectionIfNotExists: Erro ao criar collection ${collectionName} no banco.`, {
+      this.logger.error(`createCollectionIfNotExists: Error on trying to create collection ${collectionName}`, {
         message: e.message,
       })
       throw e
