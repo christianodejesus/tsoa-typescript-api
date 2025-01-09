@@ -1,3 +1,5 @@
+import "reflect-metadata"
+import { initializerModule } from "./config/ioc"
 import { LoadDependencies, container } from "./config/ioc/inversify.ioc.module"
 import { MongoDBClient } from "./infra/database/core"
 import { LoggerService } from "./infra/log/logger.service"
@@ -15,6 +17,8 @@ class App {
 
     const dbClient = container.get(MongoDBClient)
     await dbClient.connectDB()
+
+    await initializerModule.inititalizes()
 
     this.logger.info("starting API server")
     const apiServer = container.get(ApiServer)

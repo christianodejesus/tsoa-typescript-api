@@ -44,10 +44,5 @@ export abstract class BaseRepository {
     await this.dbClient.createCollectionIfNotExists(this.collectionName)
   }
 
-  public async setupCollection() {
-    await this.createCollectionIfNotExists()
-    await this.createCollectionIndexes()
-  }
-
-  protected abstract createCollectionIndexes(): Promise<void>
+  public abstract setupCollection(): Promise<void>
 }

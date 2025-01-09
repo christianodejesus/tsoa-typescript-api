@@ -12,8 +12,8 @@ export class LoggerService {
   private serviceName: string
   public static asyncStorage = new AsyncLocalStorage<Map<string, unknown>>()
 
-  constructor(context: string) {
-    this.appConfig = container.get(AppConfig)
+  constructor(context: string, config: AppConfig = container.get(AppConfig)) {
+    this.appConfig = config
     this.serviceName = this.appConfig.appName
     const logLevel = this.appConfig.logLevel
 

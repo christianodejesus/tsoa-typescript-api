@@ -1,4 +1,5 @@
 import { singleton } from "../../config"
+import { initialize } from "../../config/ioc"
 import { BaseRepository, ICollectionIndex, IDBFindOptions, IndexSortOrderEnum } from "../../infra/database"
 import { DateTimeHelper } from "../../shared/helpers"
 import { IUser, User } from "../models"
@@ -7,7 +8,10 @@ import { IUser, User } from "../models"
 export class UserRepository extends BaseRepository {
   protected collectionName = "users"
 
-  protected async createCollectionIndexes() {
+  @initialize(UserRepository)
+  public async setupCollection() {
+    await this.createCollectionIfNotExists()
+
     const collectionIndexes: ICollectionIndex[] = [
       {
         name: `${this.collectionName}_id_PRIMARY`,
